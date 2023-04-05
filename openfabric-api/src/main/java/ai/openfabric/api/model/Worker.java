@@ -1,6 +1,7 @@
 package ai.openfabric.api.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.checkerframework.common.aliasing.qual.Unique;
@@ -43,6 +44,7 @@ public class Worker extends Datable implements Serializable {
     public String containerId;
 
     @OneToOne(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private WorkerStatistics statistics;
 
 }

@@ -1,8 +1,8 @@
 package ai.openfabric.api.controller;
 
 import ai.openfabric.api.dto.WorkerDTO;
+import ai.openfabric.api.model.WorkerStatistics;
 import ai.openfabric.api.service.WorkerService;
-import com.github.dockerjava.api.model.Container;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,14 @@ public class WorkerController {
         return "Hello!" + name;
     }
 
-    @GetMapping(path = "/list")
-    public @ResponseBody List<Container> list() {
-        return workerService.listWorkers();
+    @GetMapping("/workers")
+    public ResponseEntity<List<WorkerDTO>> listWorkers(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        List<WorkerDTO> workers = workerService.listWorkers(pageNo, pageSize);
+        return ResponseEntity.ok(workers);
     }
+
 
     @PostMapping
     public ResponseEntity<String> createWorker(@RequestBody WorkerDTO workerDTO) {
@@ -59,5 +63,13 @@ public class WorkerController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/{workerId}/statistics")
+    public ResponseEntity<WorkerStatistics> getWorkerStatistics(@PathVariable String workerId) {
+        WorkerStatistics workerStatistics = workerService.getWorkerStatistics(workerId);
+        if (workerStatistics != null) {
+            return ResponseEntity.ok(workerStatistics);
+        }
+        return ResponseEntity.notFound().build();
+    }
 
 }

@@ -17,12 +17,9 @@ public class Port {
     public String id;
 
     public String ip;
-
     public int privatePort;
-
     @Unique
     public int publicPort;
-
     public String type;
 
     @ManyToOne()

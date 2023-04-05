@@ -52,7 +52,7 @@ public class WorkerInitializer implements ApplicationListener<ContextRefreshedEv
                 workerEntity.setId(worker.getId());
                 workerEntity.setName(worker.getNames()[0].substring(1));
                 workerEntity.setImageName(worker.getImage());
-                workerEntity.setStatus(WorkerStatus.valueOf(worker.getState().toUpperCase()));
+                workerEntity.setStatus(WorkerStatus.valueOf(worker.getState().toLowerCase()));
                 workerEntity.setStatusDescription(worker.getStatus());
                 workerEntity.setCommand(worker.getCommand());
                 workerEntity.setLabels(worker.getLabels());
