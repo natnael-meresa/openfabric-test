@@ -1,10 +1,7 @@
 package ai.openfabric.api.initializer;
 
-import ai.openfabric.api.model.Port;
-import ai.openfabric.api.model.Worker;
-import ai.openfabric.api.model.WorkerStatistics;
-import ai.openfabric.api.model.WorkerStatus;
-import ai.openfabric.api.repository.WorkerRepository;
+import ai.openfabric.api.model.*;
+import ai.openfabric.api.repository.*;
 import ai.openfabric.api.service.DockerClientService;
 import ai.openfabric.api.service.WorkerService;
 import com.github.dockerjava.api.DockerClient;
@@ -24,9 +21,17 @@ public class WorkerInitializer implements ApplicationListener<ContextRefreshedEv
 
     @Autowired
     private WorkerRepository workerRepository;
-
     @Autowired
     private WorkerService workerService;
+    @Autowired
+    private NetworkStatsRepository networkStatsRepository;
+    @Autowired
+    private MemoryStatsRepository memoryStatsRepository;
+    @Autowired
+    private CpuStatsRepository cpuStatsRepository;
+
+    @Autowired
+    private WorkerStatisticsRepository workerStatisticsRepository;
 
     DockerClientService dockerClientService = new DockerClientService();
     DockerClient dockerClient  = dockerClientService.InstantiatDockerClient();
@@ -59,8 +64,25 @@ public class WorkerInitializer implements ApplicationListener<ContextRefreshedEv
 
                 // create an empty WorkerStatistics object and associate it with the worker
                 WorkerStatistics workerStats = new WorkerStatistics();
+
+                CpuStats cpuStats = new CpuStats();
+                cpuStats.setWorkerStatistics(workerStats);
+                workerStats.setCpuStats(cpuStats);
+                cpuStatsRepository.save(cpuStats);
+
+                MemoryStats memoryStats = new MemoryStats();
+                memoryStats.setWorkerStatistics(workerStats);
+                workerStats.setMemoryStats(memoryStats);
+                memoryStatsRepository.save(memoryStats);
+
+                NetworkStats networkStats = new NetworkStats();
+                networkStats.setWorkerStatistics(workerStats);
+                workerStats.setNetworkStats(networkStats);
+                networkStatsRepository.save(networkStats);
+
                 workerStats.setWorker(workerEntity);
                 workerEntity.setStatistics(workerStats);
+
 
                 List<Port> ports = Arrays.stream(worker.getPorts())
                         .map(cp -> {
@@ -69,6 +91,7 @@ public class WorkerInitializer implements ApplicationListener<ContextRefreshedEv
                            p.setPrivatePort(cp.getPrivatePort());
                            p.setPublicPort(cp.getPublicPort());
                            p.setType(cp.getType());
+                           p.setWorker(workerEntity);
                            return p;
                         })
                         .collect(Collectors.toList());

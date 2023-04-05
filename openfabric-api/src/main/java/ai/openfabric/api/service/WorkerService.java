@@ -48,6 +48,9 @@ public class WorkerService {
         try {
             // create container using DockerClient
             List<ExposedPort> exposedPorts = new ArrayList<>();
+            List<Port> ports = new ArrayList<>();
+            Worker worker = new Worker();
+
             for (Port port: workerDTO.getPorts()) {
                 ExposedPort exposedPort;
                 if (port.getType().equals("udp")) {
@@ -55,6 +58,14 @@ public class WorkerService {
                 } else {
                     exposedPort = ExposedPort.tcp(port.getPublicPort());
                 }
+
+                Port p =  new Port();
+                p.setIp(port.getIp());
+                p.setPrivatePort(port.getPrivatePort());
+                p.setPublicPort(port.getPublicPort());
+                p.setType(port.getType());
+                p.setWorker(worker);
+                ports.add(p);
 
                 exposedPorts.add(exposedPort);
             }
@@ -68,7 +79,6 @@ public class WorkerService {
                     .exec();
 
             // create worker entity and save to database
-            Worker worker = new Worker();
             worker.setName(workerDTO.getName());
             worker.setStatus(WorkerStatus.created);
             worker.setStatusDescription(workerDTO.getStatusDescription());
@@ -76,11 +86,25 @@ public class WorkerService {
             worker.setLabels(workerDTO.getLabels());
             worker.setCommand(workerDTO.getCommand());
             worker.setContainerId(containerResponse.getId());
+            worker.setPorts(ports);
 
             // create an empty WorkerStatistics object and associate it with the worker
             WorkerStatistics workerStats = new WorkerStatistics();
             workerStats.setWorker(worker);
             worker.setStatistics(workerStats);
+
+            CpuStats cpuStats = new CpuStats();
+            cpuStats.setWorkerStatistics(workerStats);
+            workerStats.setCpuStats(cpuStats);
+
+            MemoryStats memoryStats = new MemoryStats();
+            memoryStats.setWorkerStatistics(workerStats);
+            workerStats.setMemoryStats(memoryStats);
+
+            NetworkStats networkStats = new NetworkStats();
+            networkStats.setWorkerStatistics(workerStats);
+            workerStats.setNetworkStats(networkStats);
+
 
             worker = workerRepository.save(worker);
             return  worker;
@@ -106,9 +130,7 @@ public class WorkerService {
     @Scheduled(fixedDelay = 60000) // Collect stats every 60 seconds
     public void collectWorkerStats() {
         // for every worker update it statistics
-        System.out.println("after 60s .>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<");
         for (Worker worker : workerRepository.findAll()) {
-            System.out.println("inside .>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<");
 
             collectStatsForWorker(worker);
         }
@@ -123,21 +145,18 @@ public class WorkerService {
             callback.close();
 
             if (stats != null) {
-                WorkerStatistics workerStats = new WorkerStatistics();
+                WorkerStatistics workerStats = worker.getStatistics();
 
-                CpuStats cpuStats = new CpuStats();
+                CpuStats cpuStats =  workerStats.getCpuStats();
                 cpuStats.setTotalUsage(stats.getCpuStats().getCpuUsage().getTotalUsage());
-                cpuStats.setPercpuUsage(stats.getCpuStats().getCpuUsage().getPercpuUsage());
                 cpuStats.setUsageInKernelmode(stats.getCpuStats().getCpuUsage().getUsageInKernelmode());
                 cpuStats.setUsageInUsermode(stats.getCpuStats().getCpuUsage().getUsageInUsermode());
                 cpuStats.setSystemCpuUsage(stats.getCpuStats().getSystemCpuUsage());
                 cpuStats.setOnlineCpus(stats.getCpuStats().getOnlineCpus());
 
-                cpuStats.setWorkerStatistics(workerStats);
-                workerStats.setCpuStats(cpuStats);
                 cpuStatsRepository.save(cpuStats);
 
-                MemoryStats memoryStats = new MemoryStats();
+                MemoryStats memoryStats = workerStats.getMemoryStats();
                 memoryStats.setFailcnt(stats.getMemoryStats().getFailcnt());
                 memoryStats.setUsage(stats.getMemoryStats().getUsage());
                 memoryStats.setMaxUsage(stats.getMemoryStats().getMaxUsage());
@@ -150,11 +169,9 @@ public class WorkerService {
                     memoryStats.setActiveFile(stats.getMemoryStats().getStats().getActiveFile());
                 }
 
-                memoryStats.setWorkerStatistics(workerStats);
-                workerStats.setMemoryStats(memoryStats);
                 memoryStatsRepository.save(memoryStats);
 
-                NetworkStats networkStats = new NetworkStats();
+                NetworkStats networkStats = workerStats.getNetworkStats();
                 if (stats.getNetworks() != null && stats.getNetworks().get("eth0") != null) {
                     networkStats.setRxBytes(stats.getNetworks().get("eth0").getRxBytes());
                     networkStats.setRxDropped(stats.getNetworks().get("eth0").getRxDropped());
@@ -166,17 +183,10 @@ public class WorkerService {
                     networkStats.setTxPackets(stats.getNetworks().get("eth0").getTxPackets());
                 }
 
-                networkStats.setWorkerStatistics(workerStats);
-                workerStats.setNetworkStats(networkStats);
                 networkStatsRepository.save(networkStats);
-
-                // Associate the statistics object with the worker
-                workerStats.setWorker(worker);
-                worker.setStatistics(workerStats);
 
                 // Save the updated entities
                 workerStatisticsRepository.save(workerStats);
-                workerRepository.save(worker);
             }
         } catch (IOException e) {
             logger.warning("Error collecting stats for worker");
@@ -268,13 +278,10 @@ public class WorkerService {
                         case "pause":
                             updateWorkerStatus(event.getActor().getAttributes().get("name"), WorkerStatus.paused);
                             break;
-                        case "rename":
-                            System.out.println(event.getActor().getAttributes().get("name"));
                         default:
                            break;
                     }
                 }
-                System.out.println("Received event: " + event.getType() +"action:"+event.getAction() + "form:" + event.getFrom());
             }
 
             @Override
@@ -301,6 +308,7 @@ public class WorkerService {
 
     public WorkerDTO convertToDTO(Worker worker) {
         WorkerDTO workerDTO = new WorkerDTO();
+        workerDTO.setId(worker.getId());
         workerDTO.setName(worker.getName());
         workerDTO.setStatus(worker.getStatus().toString());
         workerDTO.setImageName(worker.getImageName());

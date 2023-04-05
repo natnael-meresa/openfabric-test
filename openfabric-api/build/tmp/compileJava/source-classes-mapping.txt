@@ -1,7 +1,7 @@
+ai/openfabric/api/model/NetworkStats.java
+ ai.openfabric.api.model.NetworkStats
 ai/openfabric/api/repository/MemoryStatsRepository.java
  ai.openfabric.api.repository.MemoryStatsRepository
-ai/openfabric/api/model/Datable.java
- ai.openfabric.api.model.Datable
 ai/openfabric/api/config/SwaggerConfig.java
  ai.openfabric.api.config.SwaggerConfig
 ai/openfabric/api/Application.java
@@ -15,24 +15,24 @@ ai/openfabric/api/repository/WorkerStatisticsRepository.java
 ai/openfabric/api/config/DockerConfig.java
  ai.openfabric.api.config.DockerConfig
  ai.openfabric.api.config.DockerConfig$RegistryConfig
-ai/openfabric/api/repository/NetworkStatsRepository.java
- ai.openfabric.api.repository.NetworkStatsRepository
-ai/openfabric/api/repository/CpuStatsRepository.java
- ai.openfabric.api.repository.CpuStatsRepository
-ai/openfabric/api/dto/WorkerDTO.java
- ai.openfabric.api.dto.WorkerDTO
-ai/openfabric/api/config/CorsConfig.java
- ai.openfabric.api.config.CorsConfig
-ai/openfabric/api/config/WebSecurityConfig.java
- ai.openfabric.api.config.WebSecurityConfig
-ai/openfabric/api/repository/WorkerRepository.java
- ai.openfabric.api.repository.WorkerRepository
 ai/openfabric/api/service/DockerClientService.java
  ai.openfabric.api.service.DockerClientService
 ai/openfabric/api/model/WorkerStatus.java
  ai.openfabric.api.model.WorkerStatus
-ai/openfabric/api/controller/WorkerController.java
- ai.openfabric.api.controller.WorkerController
+ai/openfabric/api/model/Datable.java
+ ai.openfabric.api.model.Datable
+ai/openfabric/api/config/CorsConfig.java
+ ai.openfabric.api.config.CorsConfig
+ai/openfabric/api/config/WebSecurityConfig.java
+ ai.openfabric.api.config.WebSecurityConfig
+ai/openfabric/api/repository/CpuStatsRepository.java
+ ai.openfabric.api.repository.CpuStatsRepository
+ai/openfabric/api/repository/WorkerRepository.java
+ ai.openfabric.api.repository.WorkerRepository
+ai/openfabric/api/repository/NetworkStatsRepository.java
+ ai.openfabric.api.repository.NetworkStatsRepository
+ai/openfabric/api/model/WorkerStatistics.java
+ ai.openfabric.api.model.WorkerStatistics
 ai/openfabric/api/model/CpuStats.java
  ai.openfabric.api.model.CpuStats
 ai/openfabric/api/model/MemoryStats.java
@@ -41,12 +41,12 @@ ai/openfabric/api/model/Port.java
  ai.openfabric.api.model.Port
 ai/openfabric/api/model/Worker.java
  ai.openfabric.api.model.Worker
+ai/openfabric/api/controller/WorkerController.java
+ ai.openfabric.api.controller.WorkerController
 ai/openfabric/api/service/WorkerService.java
  ai.openfabric.api.service.WorkerService
  ai.openfabric.api.service.WorkerService$1
-ai/openfabric/api/model/NetworkStats.java
- ai.openfabric.api.model.NetworkStats
 ai/openfabric/api/initializer/WorkerInitializer.java
  ai.openfabric.api.initializer.WorkerInitializer
-ai/openfabric/api/model/WorkerStatistics.java
- ai.openfabric.api.model.WorkerStatistics
+ai/openfabric/api/dto/WorkerDTO.java
+ ai.openfabric.api.dto.WorkerDTO

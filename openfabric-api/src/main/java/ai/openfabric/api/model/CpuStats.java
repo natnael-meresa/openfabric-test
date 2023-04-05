@@ -20,8 +20,6 @@ public class CpuStats {
 
     public String id;
     private Long totalUsage;
-    @ElementCollection
-    private List<Long> percpuUsage;
     private Long usageInKernelmode;
     private Long usageInUsermode;
     private Long systemCpuUsage;

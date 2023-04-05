@@ -19,22 +19,22 @@ public class WorkerStatistics {
     public String id;
 
     // Add a OneToOne relationship to Worker
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne()
     @JoinColumn(name = "worker_id")
     @JsonIgnore
     private Worker worker;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "cpu_stats_id", referencedColumnName = "id")
     @JsonManagedReference
     private CpuStats cpuStats;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "memory_stats_id", referencedColumnName = "id")
     @JsonManagedReference
     private MemoryStats memoryStats;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "network_stats_id", referencedColumnName = "id")
     @JsonManagedReference
     private NetworkStats networkStats;

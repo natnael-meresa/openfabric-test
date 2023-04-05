@@ -8,6 +8,7 @@ import java.util.Map;
 
 @Data
 public class WorkerDTO {
+    private String id;
     private String name;
     private List<Port> ports;
     private String status;
