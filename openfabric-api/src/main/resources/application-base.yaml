@@ -53,7 +53,7 @@ elide:
 # = LOG LEVEL
 # ===============================
 logging:
-  level.org.hibernate.SQL: debug
+  level.org.hibernate.SQL: warn
 
 # ===============================
 # = Configuration
