@@ -10,12 +10,4 @@ public class DockerConfig {
     private String host;
     private boolean tlsVerify;
     private String certPath;
-    private RegistryConfig registry;
-
-    public static class RegistryConfig {
-        private String username;
-        private String password;
-        private String email;
-        private String url;
-    }
 }

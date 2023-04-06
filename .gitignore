@@ -7,6 +7,9 @@
 *.env
 *.lock
 
+build.gradle
+.gradle/
+
 # Package Files #
 *.jar
 *.war

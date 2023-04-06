@@ -62,12 +62,3 @@ node:
   api:
     path: /api/v1
 
-docker:
-  host: tcp://localhost:2375
-  tls-verify: false
-  cert-path: /home/user/.docker
-  registry:
-    username: myUsername
-    password: myPassword
-    email: myEmail
-    url: myRegistryUrl

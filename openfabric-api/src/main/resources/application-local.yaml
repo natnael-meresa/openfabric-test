@@ -13,3 +13,8 @@ spring:
     password: ${env.SPRING_DATASOURCE_PASSWORD}
 server:
   port: 8081
+
+docker:
+  host: tcp://localhost:2375
+  tls-verify: false
+  cert-path: /home/user/.docker

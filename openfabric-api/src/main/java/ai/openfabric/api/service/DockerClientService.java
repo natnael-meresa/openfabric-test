@@ -22,9 +22,11 @@ public class DockerClientService {
     private String dockerCertPath;
 
     public DockerClient InstantiatDockerClient () {
+
         DockerClientConfig dockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost("tcp://localhost:2375")
-                .withDockerTlsVerify(false)
+                .withDockerHost(dockerHost)
+                .withDockerTlsVerify(dockerTlsVerify)
+                .withDockerCertPath(dockerCertPath)
                 .build();
 
 
